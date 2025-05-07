@@ -515,3 +515,56 @@ try:
     print("\nDataFrame esportato con successo in 'filepulito.csv'")
 except Exception as e:
     print(f"\nErrore durante l'esportazione del DataFrame: {e}")
+    
+     
+# --- Visualizzazione della Matrice di Correlazione ---
+numeric_cols = [
+    'Age', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction',
+    'Job Satisfaction', 'Sleep Duration', 'Work/Study Hours', 'Financial Stress',
+    'Depression', 'Gender', 'Working Professional or Student', 'Dietary Habits',
+    'Have you ever had suicidal thoughts ?', 'Family History of Mental Illness',
+    'Region_Encoded', 'Degree_Group_Encoded', 'Professional_Group_Encoded'
+]
+
+cont_df = df_clean.select_dtypes(include=['float64'])
+
+#calcolo la Pearson-corr
+corr_matrix = cont_df.corr()
+
+plt.figure(figsize=(8,6))
+sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm")
+plt.title("Correlation matrix (variabili continue)")
+plt.show()
+
+df_clean = df_clean.rename(columns={'Have you ever had suicidal thoughts ?': 'SuicidalThoughts'}) 
+
+def elimina_variabili_vif_pvalue(X, y, vif_threshold=5.0, pvalue_threshold=0.05):
+    X_current = X.copy()
+    while True:
+        X_const = sm.add_constant(X_current)
+        model = sm.OLS(y, X_const).fit()
+        pvals = model.pvalues.drop('const')
+        vif_data = pd.DataFrame({
+            'Feature': X_current.columns,
+            'VIF': [variance_inflation_factor(X_current.values, i) 
+                    for i in range(X_current.shape[1])],
+            'p-value': pvals.values
+        })
+        # Se nessuna variabile da rimuovere, esco
+        cond = (vif_data['VIF'] > vif_threshold) & (vif_data['p-value'] > pvalue_threshold)
+        print(vif_data[['VIF','p-value']])
+        if not cond.any():
+            break
+        # Rimuovo la variabile con VIF più alto
+        to_remove = vif_data.loc[cond, 'Feature'].iloc[vif_data.loc[cond,'VIF'].argmax()]
+        print(f"Rimuovo {to_remove} (VIF={vif_data.loc[vif_data.Feature==to_remove,'VIF'].values[0]:.2f}, "
+              f"p-val={vif_data.loc[vif_data.Feature==to_remove,'p-value'].values[0]:.4f})")
+        X_current.drop(columns=[to_remove], inplace=True)
+    print("Feature finali:", X_current.columns.tolist())
+    print("Numero di feature:", len(X_current.columns))  # Alternativa corretta per contare le colonne
+    return X_current
+
+# Separazione X/y e selezione
+X = df_clean.drop(columns=['Depression'])
+y = df_clean['Depression']
+X_selected = elimina_variabili_vif_pvalue(X, y)
