@@ -11,8 +11,8 @@ import re # Importa il modulo re per le espressioni regolari
 # === Caricamento dati ===
 # ATTENZIONE: Assicurati che i percorsi dei file siano corretti sul tuo sistema.
 # Rimossi try-except e controlli if not empty come richiesto.
-train = pd.read_csv(r'C:\Users\Simxyz\Desktop\DataScienceCarreer\4.ItConsultingGiGroup\CorsoPythonwGithub\SimoneVerrengia_DepositoCorsoPython\07_05_CorsoPython_ML\MentallyStabilityOfThePerson\train.csv')
-test = pd.read_csv(r'C:\Users\Simxyz\Desktop\DataScienceCarreer\4.ItConsultingGiGroup\CorsoPythonwGithub\SimoneVerrengia_DepositoCorsoPython\07_05_CorsoPython_ML\MentallyStabilityOfThePerson\test.csv')
+train = pd.read_csv(r'train.csv')
+test = pd.read_csv(r'test.csv')
 
 print("Dati caricati con successo!")
 
