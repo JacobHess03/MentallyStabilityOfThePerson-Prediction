@@ -11,8 +11,8 @@ from sklearn.preprocessing import OrdinalEncoder, LabelEncoder
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.model_selection import GridSearchCV, train_test_split
 
-train = pd.read_csv(r'train.csv')
-test = pd.read_csv(r'test.csv')
+train = pd.read_csv(r'Mentally/train.csv')
+test = pd.read_csv(r'Mentally/test.csv')
 
 print("Dati caricati con successo!")
 
@@ -499,7 +499,7 @@ print(df.info()) # Controlla i tipi di dato e i conteggi non-null
 # === Esportazione del DataFrame in CSV ===
 # Esporta il DataFrame risultante in un file CSV chiamato 'prova.csv'
 try:
-    file_path = r'C:\Users\Simxyz\Desktop\DataScienceCarreer\4.ItConsultingGiGroup\CorsoPythonwGithub\SimoneVerrengia_DepositoCorsoPython\07_05_CorsoPython_ML\MentallyStabilityOfThePerson\prova.csv'
+    file_path = r'Mentally/prova.csv'
     df.to_csv(file_path, index=False) # index=False per non scrivere l'indice del DataFrame come colonna
     print("\nDataFrame esportato con successo in 'prova.csv'")
 except Exception as e:
@@ -510,7 +510,7 @@ df_clean = df.copy()
 df_clean = df_clean.drop(columns=['City','Name','id','Profession', 'Degree', 'Degree_Group', 'Professional_Group', 'Region'])
 
 try:
-    file_path = r'C:\Users\Simxyz\Desktop\DataScienceCarreer\4.ItConsultingGiGroup\CorsoPythonwGithub\SimoneVerrengia_DepositoCorsoPython\07_05_CorsoPython_ML\MentallyStabilityOfThePerson\filepulito.csv'
+    file_path = r'Mentally/filepulito.csv'
     df_clean.to_csv(file_path, index=False) # index=False per non scrivere l'indice del DataFrame come colonna
     print("\nDataFrame esportato con successo in 'filepulito.csv'")
 except Exception as e:
