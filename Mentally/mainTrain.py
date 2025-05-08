@@ -1,20 +1,18 @@
 # Importiamo le librerie necessarie
+import joblib
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.model_selection import GridSearchCV, train_test_split
-from imblearn.over_sampling import SMOTE
-from imblearn.pipeline import Pipeline as ImbPipeline
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from sklearn.linear_model import LogisticRegression
-from xgboost import XGBClassifier
-import matplotlib.pyplot as plt
-import seaborn as sns
-from preprocessing import preprocess_train, elimina_variabili_vif_pvalue
 
-#Funzioni per i plot 
+from xgboost import XGBClassifier
+from imblearn.over_sampling import SMOTE
+from sklearn.metrics import confusion_matrix
+from sklearn.linear_model import LogisticRegression
+from imblearn.pipeline import Pipeline as ImbPipeline
+from sklearn.model_selection import GridSearchCV, train_test_split
+from preprocessing import preprocess_train, elimina_variabili_vif_pvalue
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # Funzione per visualizzare più matrici di confusione in un unico grafico
 def plot_combined_confusion_matrices(y_true, y_pred_list, model_names):
@@ -51,7 +49,6 @@ def plot_metrics_comparison(y_true, y_pred_list, model_names):
     metrics_df = pd.DataFrame(metrics, index=model_names)
     
     # Plot
-    plt.figure(figsize=(12, 6))
     metrics_df.plot(kind='bar', figsize=(12, 6))
     plt.title('Confronto delle metriche tra i modelli')
     plt.ylabel('Score')
@@ -64,16 +61,15 @@ def plot_metrics_comparison(y_true, y_pred_list, model_names):
     
     return metrics_df
 
-
-# 1) Carico e pulisco
+# Caricamento dei dati nella variabile train
 train = pd.read_csv(r'Mentally\train.csv')
 df_clean = preprocess_train(train)
 
-# Separazione X/y e selezione
+# Selezione delle Feature e del Target
 X = df_clean.drop(columns=['Depression'])
 y = df_clean['Depression']
 X_selected = elimina_variabili_vif_pvalue(X, y)
- # Analizziamo la distribuzione delle classi
+# Analizziamo la distribuzione delle classi
 print("\nDistribuzione delle classi nel target:")
 print(y.value_counts(normalize=True))
 
@@ -94,14 +90,14 @@ X_train, X_test, y_train, y_test = train_test_split(
 log_reg = LogisticRegression(
     random_state=73, 
     max_iter=1000,
-    class_weight='balanced'  # Aggiunto bilanciamento classi
+    class_weight='balanced'  # Bilanciamento classi
 )
 
 # 2. XGBoost con pesi per la classe positiva
 xgb_clf = XGBClassifier(
     objective='binary:logistic', 
     random_state=73,
-    scale_pos_weight=scale_pos_weight  # Aggiunto bilanciamento
+    scale_pos_weight=scale_pos_weight  # Bilanciamento classi
 )
 
 # 3. Pipeline con SMOTE e XGBoost
@@ -138,25 +134,20 @@ best = best_xgb_clf = grid_clf.best_estimator_
 y_pred_log = log_reg.predict(X_test)
 y_pred_xgb = xgb_clf.predict(X_test)
 y_pred_xgb_best = best_xgb_clf.predict(X_test)
-import joblib
 
 # Miglior modello con SMOTE
 best = best_xgb_clf = grid_clf.best_estimator_
 
-
-# Salvo solo il modello migliore
+# Salviamo solo il modello migliore
 joblib.dump(
     best_xgb_clf,
     'best_xgb_clf_smote.pkl'
 )
 print("Modello XGB ottimizzato (SMOTE) salvato in 'best_xgb_clf_smote.pkl'")
 
-# (Opzionale) Se vuoi salvare anche gli altri due
 joblib.dump(log_reg, 'logistic_regression_smote.pkl')
 joblib.dump(xgb_clf, 'xgb_clf_default_smote.pkl')
 print("Modelli log_reg e xgb_clf default salvati in 'logistic_regression_smote.pkl' e 'xgb_clf_default_smote.pkl'")
-
-
 
 # Usiamo la funzione per visualizzare tutte le matrici di confusione insieme
 plot_combined_confusion_matrices(
@@ -164,8 +155,6 @@ plot_combined_confusion_matrices(
     [y_pred_log, y_pred_xgb, y_pred_xgb_best], 
     ["Logistic Regression", "XGBoost", "XGBoost (Optimized)"]
 )
-
-
 
 # Confrontiamo le metriche
 metrics_df = plot_metrics_comparison(
@@ -180,7 +169,3 @@ print(y.value_counts(normalize=True))
 
 print("\nConfronti metriche in formato tabella:")
 print(metrics_df.round(4))
-
-
-
-
