@@ -13,27 +13,33 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 def map_sleep_duration(duration_str):
     s = str(duration_str).strip()  # Converti in stringa e rimuovi spazi
 
-    # Casi speciali (es. "Less than 5", "More than 8")
+    # Casi speciali (es. "Less than 5", "Under 4")
     if re.search(r'less.*?\d+|under.*?\d+', s, re.IGNORECASE):
         num = re.search(r'\d+', s)
-        return float(num.group()) - 1 if num else np.nan  # Es. "Less than 5" → 4.0
+        return float(num.group()) - 1 if num else np.nan
+
+    # Casi speciali (es. "More than 8", "Over 9")
     elif re.search(r'more.*?\d+|over.*?\d+', s, re.IGNORECASE):
         num = re.search(r'\d+', s)
-        # Nota: qui restituisce num + 1 (es. More than 8 -> 9)
         return float(num.group()) + 1 if num else np.nan
 
-    # Cerca intervalli (es. "5-6", "4-3", "6-7 hours")
+    # Intervallo (es. "6-7", "4–5 hours")
     range_match = re.search(r'(\d+)\s*[-–—]\s*(\d+)', s)
     if range_match:
         num1, num2 = map(float, range_match.groups())
-        return (num1 + num2) / 2  # Calcola la media (es. "5-6" → 5.5)
+        avg = (num1 + num2) / 2
+        return avg if avg <= 24 else float(str(int(avg))[0])  # correzione se media troppo alta
 
-    # Cerca un singolo numero (es. "7 hours", "about 6.5")
+    # Singolo numero (es. "7", "about 6.5")
     num_match = re.search(r'\d+\.?\d*', s)
     if num_match:
-        return float(num_match.group())
+        val = float(num_match.group())
+        # Corregge se il valore è palesemente errato (>24 ore)
+        if val > 24:
+            return float(str(int(val))[0])  # Es. "49" -> "4"
+        return val
 
-    return np.nan 
+    return np.nan
 
 # Utilizziamo la funzione per calcolare il VIF ed il Pvalue sulle Feature per verificare eventuali rimozioni
 def elimina_variabili_vif_pvalue(X, y, vif_threshold=5.0, pvalue_threshold=0.05):
