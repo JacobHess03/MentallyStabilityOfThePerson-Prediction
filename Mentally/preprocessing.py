@@ -859,10 +859,6 @@ def preprocess_test(df):
     
     return df_clean, test_ids
 
-
-
-
-
 def preprocess_person_test(df):
     # --- Preparazione del DataFrame per l'imputazione ---
 
@@ -1244,8 +1240,6 @@ def preprocess_person_test(df):
         print("\nDataFrame esportato con successo in 'person_test.csv'")
     except Exception as e:
         print(f"\nErrore durante l'esportazione del DataFrame: {e}")
-
-
 
     df_clean = df_clean.rename(columns={'Have you ever had suicidal thoughts ?': 'SuicidalThoughts'}) 
     df_clean = df_clean.drop(columns=['SuicidalThoughts'])
