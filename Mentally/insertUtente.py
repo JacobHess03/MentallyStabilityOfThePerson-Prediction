@@ -2,13 +2,11 @@ import pandas as pd
 from preprocessing import preprocess_person_test
 import joblib
 
-
 def gather_input(feature_columns):
-    """
-    Chiede all'utente di inserire i valori per ciascuna colonna non preprocessata.
-    Validazione per colonne numeriche e visualizzazione opzioni per colonne categoriche.
-    Restituisce un DataFrame con una singola riga comprensivo di 'id' dummy.
-    """
+    
+    # Chiede all'utente di inserire i valori per ciascuna colonna non preprocessata.
+    # Validazione per colonne numeriche e visualizzazione opzioni per colonne categoriche.
+    # Restituisce un DataFrame con una singola riga comprensivo di 'id' dummy.
     print("Inserisci i seguenti dati:")
     data = {'id': [0]}
 
@@ -72,7 +70,6 @@ def gather_input(feature_columns):
 
     return pd.DataFrame(data)
 
-
 def insert_data():
     # Definisci qui le colonne raw (escludendo 'id')
     feature_columns = [
@@ -105,7 +102,6 @@ def insert_data():
     # Carica il modello
     model = joblib.load('best_xgb_clf_smote.pkl')
 
-
 # Predizione
     y_pred = model.predict(df_clean)
     proba = model.predict_proba(df_clean)[:, 1]  # Probabilità per la classe positiva
@@ -115,8 +111,3 @@ def insert_data():
         print(f"Risultato: La persona potrebbe essere depressa (probabilità: {proba[0]:.2%}).")
     else:
         print(f"Risultato: La persona non sembra depressa (probabilità: {proba[0]:.2%}).")
-
-
-
-
-

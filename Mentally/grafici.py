@@ -312,7 +312,7 @@ def plot_depression_by_study_satisfaction(train):
     plt.tight_layout()
     plt.show()
 
-# MATRICE DI CORRELAZIONE
+# Matrice di correlazione
 def plot_pearson_correlation(train):
     cols = ['Age', 'CGPA', 'Sleep Duration', 'Work/Study Hours']
     corr_matrix = train[cols].corr(method='pearson')

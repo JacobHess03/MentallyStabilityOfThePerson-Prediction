@@ -3,8 +3,8 @@ from insertUtente import insert_data
 
 def menu():
     print("Benvenuto nel menu principale!")
-    print("1. Inserisci i dati dell'utente e visualizza la predizione")
-    print("2. Esegui il test e genera la submission")
+    print("1. Predizione dello stato depressivo di una persona (inserimento manuale)")
+    print("2. Analisi, preprocessing, addestramento e previsione su file CSV di training")
     print("3. Esci")
 
     while True:
