@@ -62,7 +62,7 @@ def plot_metrics_comparison(y_true, y_pred_list, model_names):
     return metrics_df
 
 # Caricamento dei dati nella variabile train
-train = pd.read_csv(r'Mentally\train.csv')
+train = pd.read_csv('/Users/lilianagilca/Desktop/Corso PY&ML/MentallyStabilityOfThePerson-Prediction/Mentally/train.csv')
 df_clean = preprocess_train(train)
 
 # Selezione delle Feature e del Target
