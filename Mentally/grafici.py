@@ -1,11 +1,10 @@
 # Importiamo le librerie necessarie
-import joblib
-import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-train = pd.read_csv('/Users/lilianagilca/Desktop/Corso PY&ML/MentallyStabilityOfThePerson-Prediction/Mentally/cleaned_train.csv')
+
+train = pd.read_csv('Mentally/cleaned_train.csv')
 
 # ################Distribuzione della Frequenza del Genere##############
 
@@ -68,7 +67,7 @@ def plot_suicidal_thoughts_distribution(suicidal_thoughts_counts):
 
 def plot_depression_distribution(train):
     depression_counts = train['Depression'].value_counts()
-    depression_labels = {0: 'Sì', 1: 'No'}
+    depression_labels = {0: 'No', 1: 'Sì'}
     depression_counts_labeled = depression_counts.rename(index=depression_labels)
 
     plt.figure(figsize=(7, 5))
@@ -87,7 +86,7 @@ def plot_depression_distribution(train):
 
 def plot_depression_by_gender(train):
     gender_labels = {0: 'Femmina', 1: 'Maschio'}
-    depression_labels = {0: 'Si Depressione', 1: 'No Depressione'}
+    depression_labels = {0: 'No Depressione', 1: 'Sì Depressione'}
 
     plt.figure(figsize=(10, 6))
     ax = sns.countplot(data=train, x='Gender', hue='Depression', palette='viridis')
@@ -114,7 +113,7 @@ def plot_depression_by_gender(train):
 ###################### Frequenza dei Pensieri Suicidi Precedenti in base alla Depressione #####
 
 def plot_suicidal_thoughts_by_depression(train):
-    depression_labels = {0: 'Si Depressione', 1: 'No Depressione'}
+    depression_labels = {0: 'No Depressione', 1: 'Sì Depressione'}
     suicidal_thoughts_labels = {0: 'No (Pensieri)', 1: 'Sì (Pensieri)'}
 
     plt.figure(figsize=(9, 6))
@@ -139,18 +138,49 @@ def plot_suicidal_thoughts_by_depression(train):
 
 
 ################### Frequenza della Depressione per Regione
+
+# 0     Central India              0
+# 1        East India              1
+# 2  North-East India              2
+# 3  North-West India              3
+# 4             Other              4
+# 5       South India              5
+# 6      West-Gujarat              6
+# 7  West-Maharashtra              7
 def plot_depression_by_region(train):
-    depression_labels = {0: 'Sì Depressione', 1: 'No Depressione'}
+    depression_labels = {0: 'No Depressione', 1: 'Sì Depressione'}
     region_codes_order_sorted = sorted(train['Region_Encoded'].unique())
+    region_labels = {
+        0: 'Central India',
+        1: 'East India',
+        2: 'North-East India',
+        3: 'North-West India',
+        4: 'Other',
+        5: 'South India',
+        6: 'West-Gujarat',
+        7: 'West-Maharashtra'
+    }
 
+    # Create the countplot
     plt.figure(figsize=(14, 7))
-    ax = sns.countplot(data=train, x='Region_Encoded', hue='Depression',
-                       palette='viridis', order=region_codes_order_sorted)
-    plt.title('Frequenza della Depressione per Regione ', fontsize=16)
-    plt.xlabel('Regione (Codice Codificato)', fontsize=12)
-    plt.ylabel('Frequenza (Numero di Individui)', fontsize=12)
-    plt.xticks(rotation=45, ha='right')
+    ax = sns.countplot(
+        data=train,
+        x='Region_Encoded',
+        hue='Depression',
+        palette='viridis',
+        order=region_codes_order_sorted
+    )
 
+    # Replace numeric x-tick labels with region names
+    xtick_names = [region_labels[code] for code in region_codes_order_sorted]
+    ax.set_xticklabels(xtick_names, rotation=45, ha='right')
+
+    # Titles and labels
+    plt.title('Frequenza della Depressione per Regione', fontsize=16)
+    plt.xlabel('Regione', fontsize=12)
+    plt.ylabel('Frequenza (Numero di Individui)', fontsize=12)
+
+    # Update legend labels
     handles, labels = ax.get_legend_handles_labels()
     new_legend_labels = [depression_labels[int(lbl)] for lbl in labels]
     ax.legend(handles, new_legend_labels, title='Condizione Depressione')
@@ -160,10 +190,11 @@ def plot_depression_by_region(train):
 
 
 
+
 ############## Distribuzione dello Stress Finanziario per Stato di Depressione
     
 def plot_financial_stress_by_depression(train):
-    depression_labels_plot = {0: 'Sì Depressione', 1: 'No Depressione'}
+    depression_labels_plot = {0: 'No Depressione', 1: 'Sì Depressione'}
 
     plt.figure(figsize=(8, 6))
     ax = sns.boxplot(data=train, x='Depression', y='Financial Stress', palette='viridis')
@@ -176,7 +207,7 @@ def plot_financial_stress_by_depression(train):
 
 ############# Distribuzione dell'Età per Stato di Depressione ##############
 def plot_age_distribution_by_depression(train):
-    depression_labels_plot = {0: 'Sì Depressione', 1: 'No Depressione'}
+    depression_labels_plot = {0: 'No Depressione', 1: 'Sì Depressione'}
 
     plt.figure(figsize=(8, 6))
     ax = sns.boxplot(data=train, x='Depression', y='Age', palette='viridis')
@@ -191,32 +222,54 @@ def plot_age_distribution_by_depression(train):
 ############ Frequenza della Depressione per Gruppo di Laurea
  
 def plot_depression_by_degree_group(train):
-    depression_labels = {0: 'Sì Depressione', 1: 'No Depressione'}
+    """
+    Plotta la frequenza della depressione suddivisa per gruppo di laurea utilizzando le etichette testuali.
+    """
+    depression_labels = {0: 'No Depressione', 1: 'Sì Depressione'}
     degree_order = sorted(train['Degree_Group_Encoded'].unique())
+    degree_labels = {
+        0: 'Other',
+        1: 'High School',
+        2: 'Bachelor',
+        3: 'Master',
+        4: 'Doctorate'
+    }
 
     plt.figure(figsize=(10, 6))
-    ax = sns.countplot(data=train, x='Degree_Group_Encoded', hue='Depression',
-                       palette='viridis', order=degree_order)
+    ax = sns.countplot(
+        data=train,
+        x='Degree_Group_Encoded',
+        hue='Depression',
+        palette='viridis',
+        order=degree_order
+    )
 
+    # Sostituisci i codici dei gruppi di laurea con le etichette testuali
+    xtick_names = [degree_labels[code] for code in degree_order]
+    ax.set_xticklabels(xtick_names, rotation=0, ha='center')
+
+    # Titolo e assi
     plt.title('Frequenza della Depressione per Gruppo di Laurea', fontsize=16)
-    plt.xlabel('Gruppo di Laurea (Codifica)', fontsize=12)
+    plt.xlabel('Gruppo di Laurea', fontsize=12)
     plt.ylabel('Frequenza (Numero di Individui)', fontsize=12)
-    plt.xticks(rotation=0)
 
+    # Legenda con etichette di depressione testuali
     handles, labels = ax.get_legend_handles_labels()
     new_legend_labels = [depression_labels[int(lbl)] for lbl in labels]
     ax.legend(handles, new_legend_labels, title='Condizione Depressione')
 
+    # Aggiungi etichette sui bar
     for container in ax.containers:
         ax.bar_label(container, fmt='%.0f', label_type='edge', padding=3)
 
     plt.tight_layout()
     plt.show()
 
+
 ############ Frequenza della Depressione per Livello di Soddisfazione nello Studio
 
 def plot_depression_by_study_satisfaction(train):
-    depression_labels = {0: 'Sì Depressione', 1: 'No Depressione'}
+    depression_labels = {0: 'No Depressione', 1: 'Sì Depressione'}
     satisfaction_order = sorted(train['Study Satisfaction'].unique())
 
     plt.figure(figsize=(10, 6))
@@ -239,7 +292,7 @@ def plot_depression_by_study_satisfaction(train):
     plt.show()
 
     
-######### MATRICE DI CORRELAZIONE  ??????????##########
+######### MATRICE DI CORRELAZIONE ##########
 def plot_pearson_correlation(train):
     cols = ['Age', 'CGPA', 'Sleep Duration', 'Work/Study Hours']
     corr_matrix = train[cols].corr(method='pearson')
