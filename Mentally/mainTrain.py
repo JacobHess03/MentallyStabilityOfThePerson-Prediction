@@ -130,40 +130,35 @@ def train():
     grid_clf.fit(X_train, y_train)
 
     # Miglior modello con SMOTE
-    best = best_xgb_clf = grid_clf.best_estimator_
+    best_xgb_clf = grid_clf.best_estimator_
+
+    # Predizioni
     y_pred_log = log_reg.predict(X_test)
     y_pred_xgb = xgb_clf.predict(X_test)
     y_pred_xgb_best = best_xgb_clf.predict(X_test)
 
-    # Miglior modello con SMOTE
-    best = best_xgb_clf = grid_clf.best_estimator_
-
-    # Salviamo solo il modello migliore
-    joblib.dump(
-        best_xgb_clf,
-        'best_xgb_clf_smote.pkl'
-    )
+    # Salvataggio modelli
+    joblib.dump(best_xgb_clf, 'best_xgb_clf_smote.pkl')
     print("Modello XGB ottimizzato (SMOTE) salvato in 'best_xgb_clf_smote.pkl'")
 
     joblib.dump(log_reg, 'logistic_regression_smote.pkl')
     joblib.dump(xgb_clf, 'xgb_clf_default_smote.pkl')
     print("Modelli log_reg e xgb_clf default salvati in 'logistic_regression_smote.pkl' e 'xgb_clf_default_smote.pkl'")
 
-    # Usiamo la funzione per visualizzare tutte le matrici di confusione insieme
+    # Visualizzazione e confronto
     plot_combined_confusion_matrices(
         y_test, 
         [y_pred_log, y_pred_xgb, y_pred_xgb_best], 
         ["Logistic Regression", "XGBoost", "XGBoost (Optimized)"]
     )
 
-    # Confrontiamo le metriche
     metrics_df = plot_metrics_comparison(
         y_test, 
         [y_pred_log, y_pred_xgb, y_pred_xgb_best], 
         ["Logistic Regression", "XGBoost", "XGBoost (Optimized)"]
     )
 
-    # Analizziamo la distribuzione delle classi
+    # Distribuzione delle classi
     print("\nDistribuzione delle classi nel target dopo lo SMOTE:")
     print(y.value_counts(normalize=True))
 

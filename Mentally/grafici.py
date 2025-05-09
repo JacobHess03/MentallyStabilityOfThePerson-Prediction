@@ -129,7 +129,7 @@ def plot_depression_by_gender(train):
 # Frequenza dei Pensieri Suicidi Precedenti in base alla Depressione
 def plot_suicidal_thoughts_by_depression(train):
     depression_labels = {0: 'No Depressione', 1: 'Sì Depressione'}
-    suicidal_thoughts_labels = {0: 'No (Pensieri)', 1: 'Sì (Pensieri)'}
+    suicidal_thoughts_labels = {'0': 'No (Pensieri)', '1': 'Sì (Pensieri)', 0: 'No (Pensieri)', 1: 'Sì (Pensieri)'}
 
     plt.figure(figsize=(9, 6))
     ax = sns.countplot(data=train, x='Depression', hue='Have you ever had suicidal thoughts ?', palette='pastel')
@@ -139,7 +139,7 @@ def plot_suicidal_thoughts_by_depression(train):
     plt.xticks(ticks=[0, 1], labels=[depression_labels[0], depression_labels[1]], rotation=0)
 
     handles, labels = ax.get_legend_handles_labels()
-    new_legend_labels = [suicidal_thoughts_labels[int(lbl)] for lbl in labels]
+    new_legend_labels = [suicidal_thoughts_labels.get(lbl, lbl) for lbl in labels]
     ax.legend(handles, new_legend_labels, title='Pensieri Suicidi Precedenti')
 
     for container in ax.containers:
