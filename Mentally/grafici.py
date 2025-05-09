@@ -21,7 +21,6 @@ def plot_gender_distribution(train):
     plt.show()
 
 # Distribuzione della Frequenza: Studente vs Professionista
-
 def plot_status_distribution(train):
     status_counts = train['Working Professional or Student'].value_counts()
     status_labels = {0: 'Studente', 1: 'Professionista'}
