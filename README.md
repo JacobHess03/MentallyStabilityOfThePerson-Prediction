@@ -1,6 +1,7 @@
 ## Mentally – Predizione della Depressione
 
 **Descrizione**
+
 Mentally è un progetto di Machine Learning finalizzato a predire se un individuo potrebbe essere affetto da depressione, basandosi su variabili psicologiche e comportamentali.
 
 ---
