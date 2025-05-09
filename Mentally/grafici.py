@@ -6,6 +6,17 @@ import matplotlib.pyplot as plt
 
 train = pd.read_csv('Mentally/cleaned_train.csv')
 
+print(train[['Gender', 'Depression']].head())
+
+# Calcolo della distribuzione proporzionale
+proportions = train.groupby('Gender')['Depression'].value_counts(normalize=True).unstack()
+
+# Moltiplica per 100 per ottenere percentuali
+proportions_percentuali = proportions * 100
+
+# Visualizza il risultato
+print(proportions_percentuali)
+
 # ################Distribuzione della Frequenza del Genere##############
 
 def plot_gender_distribution(train):
@@ -41,6 +52,33 @@ def plot_status_distribution(train):
     for container in ax.containers:
         ax.bar_label(container, fmt='%.0f')
 
+    plt.tight_layout()
+    plt.show()
+
+################# Frequenza della Depressione per Status (Studente vs Professionista ######
+def plot_depression_by_status(train):
+    # Mappiamo le etichette per chiarezza
+    status_labels = {0: 'Studente', 1: 'Professionista'}
+    depression_labels = {0: 'No Depressione', 1: 'Sì Depressione'}
+
+    # Creiamo una tabella di contingenza
+    grouped = train.groupby(['Working Professional or Student', 'Depression']).size().unstack()
+
+    # Rinominiamo righe e colonne
+    grouped.index = grouped.index.map(status_labels)
+    grouped.columns = [depression_labels[col] for col in grouped.columns]
+
+    # Plot a barre
+    ax = grouped.plot(kind='bar', figsize=(8, 6), color=['#1f77b4', '#2ca02c'])
+    plt.title('Frequenza della Depressione per Status (Studente vs Professionista)', fontsize=16)
+    plt.xlabel('Status', fontsize=12)
+    plt.ylabel('Numero di Individui', fontsize=12)
+    plt.xticks(rotation=0)
+
+    for container in ax.containers:
+        ax.bar_label(container, fmt='%.0f')
+
+    plt.legend(title='Condizione di Depressione')
     plt.tight_layout()
     plt.show()
 
@@ -402,7 +440,6 @@ Colonna: Region_Encoded
 [3 2 1 7 6 5 0 4] ✅
 ------------------------
 '''
-
 def menu_visualizzazioni(train):
     while True:
         print("\n📊 MENU VISUALIZZAZIONI 📊")
@@ -418,9 +455,10 @@ def menu_visualizzazioni(train):
         print("10. Correlazione Pearson (Age, CGPA, Sleep, Work Hours)")
         print("11. Depressione per Gruppo di Laurea")
         print("12. Depressione per Soddisfazione nello Studio")
+        print("13. Depressione per Status (Studente vs Professionista)")
         print("0. Esci")
 
-        scelta = input("\nSeleziona un'opzione (0-12): ")
+        scelta = input("\nSeleziona un'opzione (0-13): ")
 
         if scelta == '1':
             plot_gender_distribution(train)
@@ -447,6 +485,8 @@ def menu_visualizzazioni(train):
             plot_depression_by_degree_group(train)
         elif scelta == '12':
             plot_depression_by_study_satisfaction(train)
+        elif scelta == '13':
+            plot_depression_by_status(train)
         elif scelta == '0':
             print("Uscita dal menù.")
             break
