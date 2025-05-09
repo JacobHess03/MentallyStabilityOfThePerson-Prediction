@@ -21,9 +21,6 @@ import joblib
 #         data[col] = [val]
 #     return pd.DataFrame(data)
 
-
-
-
 def gather_input(feature_columns):
     """
     Chiede all'utente di inserire i valori per ciascuna colonna non preprocessata.
@@ -35,12 +32,14 @@ def gather_input(feature_columns):
 
     # Definisci range per alcune colonne
     ranges = {
+        'Gender': 'Male/Female',
         'Academic Pressure': (1, 5),
-        'Work Pressure': (1, 5),
-        'Study Satisfaction': (1, 5),
+        'Work Pressure': (0, 5),
+        'Study Satisfaction': (0, 5),
         'Job Satisfaction': (0, 5),
         'Financial Stress': (1, 5),
         'CGPA': (0.0, 10.0),
+        'Dietary Habits': ('Unhealthy','Moderate','Healthy'),
         'Sleep Duration': (0.0, 24.0),
         'Work/Study Hours': (0.0, 24.0)
     }
