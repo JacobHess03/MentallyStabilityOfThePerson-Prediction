@@ -2,19 +2,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-train = pd.read_csv('Mentally/cleaned_train.csv')
-
-print(train[['Gender', 'Depression']].head())
-
-# Calcolo della distribuzione proporzionale
-proportions = train.groupby('Gender')['Depression'].value_counts(normalize=True).unstack()
-
-# Moltiplica per 100 per ottenere percentuali
-proportions_percentuali = proportions * 100
-
-# Visualizza il risultato
-print(proportions_percentuali)
-
 # Distribuzione della Frequenza del Genere
 def plot_gender_distribution(train):
     gender_labels = {0: 'Femmina', 1: 'Maschio'}
@@ -324,7 +311,19 @@ def plot_pearson_correlation(train):
     plt.tight_layout()
     plt.show()
 
-def menu_visualizzazioni(train):
+def menu_visualizzazioni():
+    train = pd.read_csv('Mentally/cleaned_train.csv')
+
+    print(train[['Gender', 'Depression']].head())
+
+    # Calcolo della distribuzione proporzionale
+    proportions = train.groupby('Gender')['Depression'].value_counts(normalize=True).unstack()
+
+    # Moltiplica per 100 per ottenere percentuali
+    proportions_percentuali = proportions * 100
+
+    # Visualizza il risultato
+    print(proportions_percentuali)
     while True:
         print("\n MENU VISUALIZZAZIONI")
         print("1. Distribuzione del Genere")
@@ -376,5 +375,3 @@ def menu_visualizzazioni(train):
             break
         else:
             print("Scelta non valida. Riprova.")
-
-menu_visualizzazioni(train)
