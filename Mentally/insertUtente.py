@@ -2,26 +2,6 @@ import pandas as pd
 from preprocessing import preprocess_person_test
 import joblib
 
-# def gather_input(feature_columns):
-#     """
-#     Chiede all'utente di inserire i valori per ciascuna colonna non preprocessata.
-#     Restituisce un DataFrame con una singola riga comprensivo di 'id' dummy.
-#     """
-#     print("Inserisci i seguenti dati:")
-#     data = {}
-#     # aggiungiamo un id fisso (dummy) richiesto da preprocess_test
-#     data['id'] = [0]
-#     for col in feature_columns:
-#         val = input(f"- {col}: ")
-#         # Prova a convertire in numerico, altrimenti lascia stringa
-#         try:
-#             val = float(val) if '.' in val else int(val)
-#         except ValueError:
-#             pass
-#         data[col] = [val]
-#     return pd.DataFrame(data)
-
-import pandas as pd
 
 def gather_input(feature_columns):
     """
@@ -93,7 +73,7 @@ def gather_input(feature_columns):
     return pd.DataFrame(data)
 
 
-def main():
+def insert_data():
     # Definisci qui le colonne raw (escludendo 'id')
     feature_columns = [
         'Name',
@@ -136,5 +116,7 @@ def main():
     else:
         print(f"Risultato: La persona non sembra depressa (probabilità: {proba[0]:.2%}).")
 
-if __name__ == '__main__':
-    main()
+
+
+
+
