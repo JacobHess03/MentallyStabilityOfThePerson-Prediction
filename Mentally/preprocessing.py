@@ -438,22 +438,22 @@ def preprocess_train(df):
     except Exception as e:
         print(f"\nErrore durante l'esportazione del DataFrame: {e}")
         
-    # --- Visualizzazione della Matrice di Correlazione ---
-    numeric_cols = [
-        'Age', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction',
-        'Job Satisfaction', 'Sleep Duration', 'Work/Study Hours', 'Financial Stress',
-        'Depression', 'Gender', 'Working Professional or Student', 'Dietary Habits',
-        'Have you ever had suicidal thoughts ?', 'Family History of Mental Illness',
-        'Region_Encoded', 'Degree_Group_Encoded', 'Professional_Group_Encoded'
-    ]
+    # # --- Visualizzazione della Matrice di Correlazione ---
+    # numeric_cols = [
+    #     'Age', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction',
+    #     'Job Satisfaction', 'Sleep Duration', 'Work/Study Hours', 'Financial Stress',
+    #     'Depression', 'Gender', 'Working Professional or Student', 'Dietary Habits',
+    #     'Have you ever had suicidal thoughts ?', 'Family History of Mental Illness',
+    #     'Region_Encoded', 'Degree_Group_Encoded', 'Professional_Group_Encoded'
+    # ]
 
-    # Visualizziamo la matrice di correlazione
-    corr_matrix = df_clean[numeric_cols].corr()
+    # # Visualizziamo la matrice di correlazione
+    # corr_matrix = df_clean[numeric_cols].corr()
 
-    plt.figure(figsize=(8,6))
-    sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm")
-    plt.title("Correlation matrix (variabili continue)")
-    plt.show()
+    # plt.figure(figsize=(8,6))
+    # sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm")
+    # plt.title("Correlation matrix (variabili continue)")
+    # plt.show()
 
     # Modifichiamo il nome della colonna 'Have you ever had suicidal thoughts ?' in 'SuicidalThoughts' 
     df_clean = df_clean.rename(columns={'Have you ever had suicidal thoughts ?': 'SuicidalThoughts'}) 
@@ -843,22 +843,22 @@ def preprocess_test(df):
     except Exception as e:
         print(f"\nErrore durante l'esportazione del DataFrame: {e}")
 
-    # --- Visualizzazione della Matrice di Correlazione ---
-    numeric_cols = [
-        'Age', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction',
-        'Job Satisfaction', 'Sleep Duration', 'Work/Study Hours', 'Financial Stress',
-        'Gender', 'Working Professional or Student', 'Dietary Habits',
-        'Have you ever had suicidal thoughts ?', 'Family History of Mental Illness',
-        'Region_Encoded', 'Degree_Group_Encoded', 'Professional_Group_Encoded'
-    ]
+    # # --- Visualizzazione della Matrice di Correlazione ---
+    # numeric_cols = [
+    #     'Age', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction',
+    #     'Job Satisfaction', 'Sleep Duration', 'Work/Study Hours', 'Financial Stress',
+    #     'Gender', 'Working Professional or Student', 'Dietary Habits',
+    #     'Have you ever had suicidal thoughts ?', 'Family History of Mental Illness',
+    #     'Region_Encoded', 'Degree_Group_Encoded', 'Professional_Group_Encoded'
+    # ]
 
-    # Calcolo la Pearson-corr
-    corr_matrix = df_clean[numeric_cols].corr()
+    # # Calcolo la Pearson-corr
+    # corr_matrix = df_clean[numeric_cols].corr()
 
-    plt.figure(figsize=(8,6))
-    sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm")
-    plt.title("Correlation matrix (variabili continue)")
-    plt.show()
+    # plt.figure(figsize=(8,6))
+    # sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm")
+    # plt.title("Correlation matrix (variabili continue)")
+    # plt.show()
 
     df_clean = df_clean.rename(columns={'Have you ever had suicidal thoughts ?': 'SuicidalThoughts'}) 
     df_clean = df_clean.drop(columns=['SuicidalThoughts'])

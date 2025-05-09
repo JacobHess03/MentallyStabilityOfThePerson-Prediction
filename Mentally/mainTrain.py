@@ -60,112 +60,112 @@ def plot_metrics_comparison(y_true, y_pred_list, model_names):
     plt.show()
     
     return metrics_df
+def train():
+    # Caricamento dei dati nella variabile train
+    train = pd.read_csv('Mentally/train.csv')
+    df_clean = preprocess_train(train)
 
-# Caricamento dei dati nella variabile train
-train = pd.read_csv('/Users/lilianagilca/Desktop/Corso PY&ML/MentallyStabilityOfThePerson-Prediction/Mentally/train.csv')
-df_clean = preprocess_train(train)
+    # Selezione delle Feature e del Target
+    X = df_clean.drop(columns=['Depression'])
+    y = df_clean['Depression']
+    X_selected = elimina_variabili_vif_pvalue(X, y)
+    # Analizziamo la distribuzione delle classi
+    print("\nDistribuzione delle classi nel target:")
+    print(y.value_counts(normalize=True))
 
-# Selezione delle Feature e del Target
-X = df_clean.drop(columns=['Depression'])
-y = df_clean['Depression']
-X_selected = elimina_variabili_vif_pvalue(X, y)
-# Analizziamo la distribuzione delle classi
-print("\nDistribuzione delle classi nel target:")
-print(y.value_counts(normalize=True))
+    # Calcoliamo il rapporto per scale_pos_weight in XGBoost
+    negative_count, positive_count = np.bincount(y)
+    scale_pos_weight = negative_count / positive_count
+    print(f"\nRapporto delle classi (negativo/positivo): {scale_pos_weight:.2f}")
 
-# Calcoliamo il rapporto per scale_pos_weight in XGBoost
-negative_count, positive_count = np.bincount(y)
-scale_pos_weight = negative_count / positive_count
-print(f"\nRapporto delle classi (negativo/positivo): {scale_pos_weight:.2f}")
+    # Separazione train/test mantenendo la distribuzione delle classi
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_selected, y, 
+        test_size=0.2, 
+        random_state=73,
+        stratify=y  # Mantiene la distribuzione originale
+    )
 
-# Separazione train/test mantenendo la distribuzione delle classi
-X_train, X_test, y_train, y_test = train_test_split(
-    X_selected, y, 
-    test_size=0.2, 
-    random_state=73,
-    stratify=y  # Mantiene la distribuzione originale
-)
+    # 1. Logistic Regression con class weights
+    log_reg = LogisticRegression(
+        random_state=73, 
+        max_iter=1000,
+        class_weight='balanced'  # Bilanciamento classi
+    )
 
-# 1. Logistic Regression con class weights
-log_reg = LogisticRegression(
-    random_state=73, 
-    max_iter=1000,
-    class_weight='balanced'  # Bilanciamento classi
-)
+    # 2. XGBoost con pesi per la classe positiva
+    xgb_clf = XGBClassifier(
+        objective='binary:logistic', 
+        random_state=73,
+        scale_pos_weight=scale_pos_weight  # Bilanciamento classi
+    )
 
-# 2. XGBoost con pesi per la classe positiva
-xgb_clf = XGBClassifier(
-    objective='binary:logistic', 
-    random_state=73,
-    scale_pos_weight=scale_pos_weight  # Bilanciamento classi
-)
+    # 3. Pipeline con SMOTE e XGBoost
+    smote = SMOTE(random_state=73, sampling_strategy='auto')
+    xgb_smote = ImbPipeline([
+        ('smote', smote),
+        ('xgb', XGBClassifier(objective='binary:logistic', random_state=73))
+    ])
 
-# 3. Pipeline con SMOTE e XGBoost
-smote = SMOTE(random_state=73, sampling_strategy='auto')
-xgb_smote = ImbPipeline([
-    ('smote', smote),
-    ('xgb', XGBClassifier(objective='binary:logistic', random_state=73))
-])
+    # Parametri per la GridSearch con SMOTE
+    param_grid = {
+        'xgb__n_estimators': [50, 100],
+        'xgb__max_depth': [3, 5],
+        'xgb__learning_rate': [0.01, 0.1],
+        'xgb__scale_pos_weight': [1, scale_pos_weight]  # Testa con e senza pesi
+    }
 
-# Parametri per la GridSearch con SMOTE
-param_grid = {
-    'xgb__n_estimators': [50, 100],
-    'xgb__max_depth': [3, 5],
-    'xgb__learning_rate': [0.01, 0.1],
-    'xgb__scale_pos_weight': [1, scale_pos_weight]  # Testa con e senza pesi
-}
+    grid_clf = GridSearchCV(
+        xgb_smote,
+        param_grid, 
+        scoring='f1', 
+        cv=5, 
+        n_jobs=-1
+    )
 
-grid_clf = GridSearchCV(
-    xgb_smote,
-    param_grid, 
-    scoring='f1', 
-    cv=5, 
-    n_jobs=-1
-)
+    # Addestramento modelli
+    print("\nAddestramento modelli...")
+    log_reg.fit(X_train, y_train)
+    xgb_clf.fit(X_train, y_train)
+    grid_clf.fit(X_train, y_train)
 
-# Addestramento modelli
-print("\nAddestramento modelli...")
-log_reg.fit(X_train, y_train)
-xgb_clf.fit(X_train, y_train)
-grid_clf.fit(X_train, y_train)
+    # Miglior modello con SMOTE
+    best = best_xgb_clf = grid_clf.best_estimator_
+    y_pred_log = log_reg.predict(X_test)
+    y_pred_xgb = xgb_clf.predict(X_test)
+    y_pred_xgb_best = best_xgb_clf.predict(X_test)
 
-# Miglior modello con SMOTE
-best = best_xgb_clf = grid_clf.best_estimator_
-y_pred_log = log_reg.predict(X_test)
-y_pred_xgb = xgb_clf.predict(X_test)
-y_pred_xgb_best = best_xgb_clf.predict(X_test)
+    # Miglior modello con SMOTE
+    best = best_xgb_clf = grid_clf.best_estimator_
 
-# Miglior modello con SMOTE
-best = best_xgb_clf = grid_clf.best_estimator_
+    # Salviamo solo il modello migliore
+    joblib.dump(
+        best_xgb_clf,
+        'best_xgb_clf_smote.pkl'
+    )
+    print("Modello XGB ottimizzato (SMOTE) salvato in 'best_xgb_clf_smote.pkl'")
 
-# Salviamo solo il modello migliore
-joblib.dump(
-    best_xgb_clf,
-    'best_xgb_clf_smote.pkl'
-)
-print("Modello XGB ottimizzato (SMOTE) salvato in 'best_xgb_clf_smote.pkl'")
+    joblib.dump(log_reg, 'logistic_regression_smote.pkl')
+    joblib.dump(xgb_clf, 'xgb_clf_default_smote.pkl')
+    print("Modelli log_reg e xgb_clf default salvati in 'logistic_regression_smote.pkl' e 'xgb_clf_default_smote.pkl'")
 
-joblib.dump(log_reg, 'logistic_regression_smote.pkl')
-joblib.dump(xgb_clf, 'xgb_clf_default_smote.pkl')
-print("Modelli log_reg e xgb_clf default salvati in 'logistic_regression_smote.pkl' e 'xgb_clf_default_smote.pkl'")
+    # Usiamo la funzione per visualizzare tutte le matrici di confusione insieme
+    plot_combined_confusion_matrices(
+        y_test, 
+        [y_pred_log, y_pred_xgb, y_pred_xgb_best], 
+        ["Logistic Regression", "XGBoost", "XGBoost (Optimized)"]
+    )
 
-# Usiamo la funzione per visualizzare tutte le matrici di confusione insieme
-plot_combined_confusion_matrices(
-    y_test, 
-    [y_pred_log, y_pred_xgb, y_pred_xgb_best], 
-    ["Logistic Regression", "XGBoost", "XGBoost (Optimized)"]
-)
+    # Confrontiamo le metriche
+    metrics_df = plot_metrics_comparison(
+        y_test, 
+        [y_pred_log, y_pred_xgb, y_pred_xgb_best], 
+        ["Logistic Regression", "XGBoost", "XGBoost (Optimized)"]
+    )
 
-# Confrontiamo le metriche
-metrics_df = plot_metrics_comparison(
-    y_test, 
-    [y_pred_log, y_pred_xgb, y_pred_xgb_best], 
-    ["Logistic Regression", "XGBoost", "XGBoost (Optimized)"]
-)
+    # Analizziamo la distribuzione delle classi
+    print("\nDistribuzione delle classi nel target dopo lo SMOTE:")
+    print(y.value_counts(normalize=True))
 
- # Analizziamo la distribuzione delle classi
-print("\nDistribuzione delle classi nel target dopo lo SMOTE:")
-print(y.value_counts(normalize=True))
-
-print("\nConfronti metriche in formato tabella:")
-print(metrics_df.round(4))
+    print("\nConfronti metriche in formato tabella:")
+    print(metrics_df.round(4))
