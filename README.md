@@ -164,7 +164,7 @@ Questo modulo è fondamentale e centralizza tutta la logica di pulizia e trasfor
 * `preprocess_test(df)`: Implementa una pipeline di preprocessing identica a `preprocess_train` ma specifica per il dataset di test. È cruciale che le trasformazioni (mappature, imputazioni) siano basate *solo* sui dati del training set originale per evitare data leakage. Questa funzione restituisce il DataFrame pulito e gli ID originali del test set. Salva il DataFrame pulito in `cleaned_test.csv`.
 * `preprocess_person_test(df)`: Una versione della pipeline di preprocessing ottimizzata per gestire un singolo record di input (presumibilmente da `insertUtente.py`). Applica le stesse trasformazioni di imputazione e codifica per rendere il formato del singolo record compatibile con quello dei dati su cui è stato addestrato il modello. Salva il record processato in `person_test.csv` (probabilmente temporaneo).
 
-### `insertUtente.py` (CODICE NON FORNITO)
+### `insertUtente.py` 
 
 Basato sull'importazione nel `main.py`, questo script è atteso per contenere la funzione `insert_data()`. Il suo scopo è di:
 1.  Interagire con l'utente tramite input da console (o altra GUI) per raccogliere i dati di una singola persona (età, genere, professione, ecc.).
@@ -174,21 +174,11 @@ Basato sull'importazione nel `main.py`, questo script è atteso per contenere la
 5.  Effettuare una predizione sullo stato depressivo per l'input pre-processato.
 6.  Comunicare la predizione risultante all'utente.
 
-### `grafici.py` (CODICE NON FORNITO)
+### `grafici.py` 
 
 Basato sull'importazione nel `main.py`, questo script è atteso per contenere la funzione `menu_visualizzazioni()` e potenzialmente altre funzioni di supporto per la generazione di grafici. Il suo scopo è di fornire visualizzazioni aggiuntive rispetto a quelle incluse in `mainTrain.py`, che potrebbero includere:
 1.  Visualizzazioni esplorative del dataset originale (distribuzioni di feature, relazioni tra variabili).
 2.  Visualizzazioni relative ai risultati o alle performance del modello (oltre matrici di confusione e metriche riassuntive).
 Utilizzerebbe tipicamente le librerie `matplotlib` e `seaborn`.
 
-## Note e Possibili Sviluppi Futuri
 
-* Le funzionalità relative all'input manuale (`insertUtente.py`) e alle visualizzazioni aggiuntive (`grafici.py`) richiedono che i relativi file Python vengano aggiunti al progetto. Il codice per questi moduli non è stato incluso nelle forniture precedenti.
-* La colonna `Have you ever had suicidal thoughts ?` viene elaborata nel preprocessing ma successivamente rimossa in tutte e tre le funzioni di preprocessing (`_train`, `_test`, `_person_test`). Questo indica che non è stata inclusa come feature nel modello finale.
-* Le soglie VIF e p-value per la selezione delle feature (`elimina_variabili_vif_pvalue`) sono impostate a 5.0 e 0.05 rispettivamente, ma possono essere modificate per sperimentare diversi livelli di selezione.
-* Il progetto attuale si basa su un modello XGBoost ottimizzato tramite GridSearchCV. Potrebbero essere esplorati altri modelli (es. Support Vector Machines, Random Forest, Reti Neurali) o tecniche di ensemble per potenziali miglioramenti delle performance.
-* L'analisi dei risultati potrebbe beneficiare di ulteriori metriche (es. curva ROC, Area Under Curve) o di tecniche di interpretabilità del modello (es. SHAP, LIME).
-
----
-
-Spero che questa formattazione e questo livello di dettaglio siano perfetti per il tuo profilo GitHub! Fammi sapere se ci sono altri aggiustamenti di cui hai bisogno.
