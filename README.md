@@ -1,135 +1,194 @@
 
 
-MentallyStabilityOfThePerson-Predication
-Introduzione
-Questo progetto mira a esplorare i fattori che possono influenzare lo stato depressivo, analizzando un dataset specifico e sviluppando modelli di Machine Learning per predire la probabilità che un individuo possa soffrire di depressione. Data la crescente importanza della salute mentale, l'obiettivo è fornire uno strumento analitico e predittivo basato sui dati.
+# Mentally Stability Of The Person-Predication
 
-Il progetto copre l'intera pipeline di Machine Learning, dalla pulizia e preparazione dei dati all'addestramento e valutazione dei modelli, offrendo anche funzionalità per la predizione su nuovi dati e l'interazione tramite un menu.
+## Introduzione
 
-Funzionalità Implementate
-Preprocessing Dati Robusto:
-Gestione avanzata dei valori mancanti con logiche condizionali basate sul ruolo (Student vs Working Professional).
-Tecniche di imputazione (mediana, moda) specifiche per tipo di variabile e sottogruppo.
-Parsing e standardizzazione di formati dati non uniformi (es. Sleep Duration, Degree).
-Codifica di variabili categoriche nominali e ordinali (Genere, Stato Lavorativo/Studentesco, Abitudini Alimentari, Livello di Istruzione raggruppato, Storia Familiare, Regione raggruppata, Gruppo Professionale raggruppato).
-Raggruppamento di categorie sparse o non standardizzate (es. diversi titoli di studio in Degree_Group, diverse professioni in Professional_Group, città in Region).
-Analisi e selezione delle feature basata su Variance Inflation Factor (VIF) e p-value per mitigare la multicollinearità e identificare variabili significative (applicata sul training set prima dello split).
-Esportazione dei dataset pre-processati (cleaned_train.csv, cleaned_test.csv, person_test.csv).
-Addestramento e Ottimizzazione Modelli:
-Implementazione di diversi algoritmi di classificazione: Logistic Regression e XGBoost.
-Strategie per affrontare lo sbilanciamento del dataset (classi di depressione vs non depressione):
-Uso di class_weight='balanced' per Logistic Regression.
-Calcolo e applicazione di scale_pos_weight per XGBoost.
-Integrazione di SMOTE (Synthetic Minority Over-sampling Technique) tramite imblearn.pipeline per creare campioni sintetici della classe minoritaria.
-Ottimizzazione degli iperparametri di XGBoost (con pipeline SMOTE) utilizzando GridSearchCV e cross-validation (CV=5) con metrica di scoring F1-Score (particolarmente rilevante per dataset sbilanciati).
-Valutazione Performance:
-Calcolo di metriche di classificazione standard: Accuracy, Precision, Recall, F1-Score.
-Visualizzazione grafica comparativa delle matrici di confusione per i modelli valutati.
-Visualizzazione grafica comparativa delle metriche chiave (Accuracy, Precision, Recall, F1-Score).
-Predizione:
-Predizione sullo standard test set (test.csv) e generazione di un file di submission (submission.csv) nel formato richiesto (ID e Predizione).
-Predizione dello stato depressivo per un singolo individuo basata su input manuale (richiede insertUtente.py).
-Interfaccia Utente Semplice:
-Menu testuale interattivo (main.py) per navigare tra le principali funzionalità del progetto (addestramento, test, predizione singola, visualizzazioni).
-Struttura del Progetto
+Questo progetto affronta il tema critico della salute mentale attraverso l'analisi di un dataset, con l'obiettivo di sviluppare un modello di Machine Learning capace di predire la probabilità di uno stato depressivo. Implementa una pipeline completa che include fasi di preprocessing avanzato, addestramento di diversi modelli di classificazione, valutazione delle performance e una semplice interfaccia a menu per l'interazione.
+
+## Funzionalità Principali
+
+Il progetto offre le seguenti funzionalità:
+
+* **Preprocessing Dati Avanzato:**
+    * Gestione sofisticata dei valori mancanti tramite tecniche di imputazione (mediana, moda) con logiche differenziate per sottogruppi specifici (Studenti vs Working Professionals).
+    * Normalizzazione e standardizzazione di dati testuali e categorici non uniformi (es. durate del sonno, titoli di studio).
+    * Codifica di variabili categoriche (binarie, ordinali, nominali) utilizzando mappature personalizzate, OrdinalEncoder e LabelEncoder.
+    * Raggruppamento intelligente di categorie con alta cardinalità (es. Professioni, Città) in gruppi più gestibili (Professional Group, Region, Degree Group).
+    * Selezione automatica delle feature basata su test statistici (VIF e p-value) per ridurre la multicollinearità e migliorare la stabilità del modello (applicata sul training set prima dello split).
+* **Pipeline di Addestramento Modelli:**
+    * Addestramento di modelli di classificazione robusti come Logistic Regression e XGBoost.
+    * Strategie mirate per gestire il potenziale sbilanciamento delle classi nel dataset (stato depressivo presente vs assente), inclusi `class_weight`, `scale_pos_weight` e l'applicazione di SMOTE tramite `imblearn.pipeline`.
+    * Ottimizzazione degli iperparametri del modello XGBoost utilizzando GridSearchCV con cross-validation (5 fold) focalizzata sull'ottimizzazione del F1-Score.
+* **Valutazione e Confronto Performance:**
+    * Calcolo e visualizzazione delle metriche di valutazione standard: Accuracy, Precision, Recall, e F1-Score.
+    * Generazione e visualizzazione comparativa delle Matrici di Confusione per una comprensione approfondita delle performance dei modelli.
+* **Predizione su Nuovi Dati:**
+    * Applicazione del preprocessing identico a quello del training set per garantire coerenza.
+    * Caricamento del modello addestrato ottimizzato (`best_xgb_clf_smote.pkl`).
+    * Generazione di previsioni sul dataset di test e creazione di un file `submission.csv` nel formato standard ID/Predizione.
+    * Possibilità di ottenere una predizione per un singolo individuo inserendo i dati manualmente (richiede script dedicato).
+* **Interfaccia Utente Interattiva:**
+    * Menu testuale semplice per lanciare le varie fasi della pipeline (Addestramento, Test, Predizione Singola).
+    * Integrazione con uno script esterno per visualizzazioni aggiuntive (richiede script dedicato).
+
+## Struttura del Progetto
+
+La struttura delle cartelle e dei file è organizzata come segue:
+
+```
 .
 ├── Mentally/
-│   ├── train.csv                       # Dataset di training originale (richiesto per esecuzione 1)
-│   ├── test.csv                        # Dataset di test originale (richiesto per esecuzione 2)
-│   ├── submission.csv                  # Output: File CSV con le previsioni sul test set (generato da 2)
-│   ├── cleaned_train.csv               # Output: Training set dopo preprocessing (generato da 1)
-│   ├── cleaned_test.csv                # Output: Test set dopo preprocessing (generato da 2)
-│   ├── person_test.csv                 # Output: File CSV temporaneo per input manuale (generato da 3)
-│   ├── best_xgb_clf_smote.pkl          # Output: Modello XGBoost ottimizzato con SMOTE (generato da 1)
-│   ├── logistic_regression_smote.pkl   # Output: Modello Logistic Regression bilanciato (generato da 1)
-│   └── xgb_clf_default_smote.pkl       # Output: Modello XGBoost default con pesi (generato da 1)
-├── main.py                             # Script principale con menu interattivo
-├── mainTrain.py                        # Logica per addestramento, valutazione e salvataggio modelli
-├── mainTest.py                         # Logica per predizione su test set e generazione submission
-├── preprocessing.py                    # Tutte le funzioni per la pulizia e trasformazione dei dati
-├── insertUtente.py                     # Gestione input manuale utente e predizione singola (CODICE NON FORNITO)
-└── grafici.py                          # Funzioni per visualizzazioni grafiche (CODICE NON FORNITO)
-Requisiti di Sistema
-Assicurati di avere installato Python 3.6 o superiore. Le dipendenze principali sono:
+│   ├── train.csv                       # Dataset di training originale (input)
+│   ├── test.csv                        # Dataset di test originale (input)
+│   ├── submission.csv                  # Output: File CSV con le previsioni sul test set
+│   ├── cleaned_train.csv               # Output: Training set dopo preprocessing
+│   ├── cleaned_test.csv                # Output: Test set dopo preprocessing
+│   ├── person_test.csv                 # Output: File CSV temporaneo per input manuale singolo
+│   ├── best_xgb_clf_smote.pkl          # Output: Modello XGBoost ottimizzato addestrato
+│   ├── logistic_regression_smote.pkl   # Output: Modello Logistic Regression addestrato
+│   └── xgb_clf_default_smote.pkl       # Output: Modello XGBoost di base addestrato
+├── main.py                             # Script principale con menu
+├── mainTrain.py                        # Modulo: Addestramento, valutazione, salvataggio
+├── mainTest.py                         # Modulo: Predizione su test set e submission
+├── preprocessing.py                    # Modulo: Funzioni centralizzate di pulizia e trasformazione dati
+├── insertUtente.py                     # Modulo: Gestione input manuale utente (CODICE NON FORNITO)
+└── grafici.py                          # Modulo: Funzioni per visualizzazioni aggiuntive (CODICE NON FORNITO)
+```
 
-pandas (per la manipolazione dei dati)
-numpy (per operazioni numeriche)
-scikit-learn (per split dati, modelli, metriche, encoding)
-imbalanced-learn (per SMOTE e pipeline)
-xgboost (per il modello XGBoost)
-statsmodels (per VIF e p-value)
-seaborn e matplotlib (per le visualizzazioni)
-joblib (per il salvataggio/caricamento dei modelli)
-re (built-in, per regex nel preprocessing)
-Puoi installare la maggior parte delle dipendenze tramite pip:
+## Requisiti di Sistema e Installazione
 
-Bash
+### Requisiti
 
+Assicurati di avere **Python 3.6+** installato. Le librerie Python necessarie sono:
+
+* `pandas`
+* `numpy`
+* `scikit-learn`
+* `imbalanced-learn`
+* `xgboost`
+* `statsmodels`
+* `seaborn`
+* `matplotlib`
+* `joblib`
+
+Puoi installarle tutte tramite pip:
+
+```bash
 pip install pandas numpy scikit-learn imbalanced-learn xgboost statsmodels seaborn matplotlib joblib
-Installazione
-Scarica o clona i file del progetto nella tua directory locale.
-Crea una sottocartella chiamata Mentally/ nella directory principale del progetto.
-Posiziona i file train.csv e test.csv (il dataset su cui lavorare) all'interno della cartella Mentally/.
-Utilizzo
-Esegui il programma principale dal terminale:
+```
 
-Bash
+Il modulo `re` è una libreria standard di Python e non richiede installazione aggiuntiva.
 
+### Installazione
+
+1.  Clona il repository:
+    ```bash
+    git clone <URL_DEL_TUO_REPOSITORY>
+    cd <nome_cartella_progetto>
+    ```
+2.  Crea la cartella necessaria per i dati e gli output:
+    ```bash
+    mkdir Mentally
+    ```
+3.  Posiziona i file `train.csv` e `test.csv` (ottenuti dal dataset) all'interno della cartella `Mentally/`.
+
+## Utilizzo del Programma
+
+Per avviare l'applicazione interattiva, esegui lo script principale dal terminale nella directory radice del progetto:
+
+```bash
 python main.py
-Verrà visualizzato il menu interattivo:
+```
 
+Ti verrà presentato un menu:
+
+```
 Benvenuto nel menu principale!
 1. Analisi, preprocessing, addestramento e previsione su file CSV di training
 2. Analisi, preprocessing, previsione su test e generazione submission
 3. Predizione dello stato depressivo di una persona (inserimento manuale)
 4. Visualizza grafici
 5. Esci
-Opzione 1: Esegue l'intera pipeline di addestramento. Carica train.csv, applica il preprocessing, seleziona le feature, splitta in train/test interni per la validazione, addestra i modelli (LogReg, XGBoost, XGBoost con SMOTE + GridSearch), valuta le performance visualizzando metriche e matrici di confusione, e salva i modelli addestrati e il dataset pulito nella cartella Mentally/. Questa opzione deve essere eseguita almeno una volta prima delle opzioni 2 e 3.
-Opzione 2: Esegue la pipeline di test/submission. Carica test.csv, applica lo stesso preprocessing definito in preprocessing.py, carica il modello salvato best_xgb_clf_smote.pkl (addestrato nell'opzione 1), effettua le predizioni sul test set e salva il risultato nel file Mentally/submission.csv.
-Opzione 3: Avvia l'interfaccia per l'inserimento manuale dei dati di un singolo utente (implementata in insertUtente.py). I dati inseriti vengono pre-processati (usando preprocess_person_test da preprocessing.py), e il modello addestrato (caricato da .pkl) viene utilizzato per fornire una predizione. Richiede che il file insertUtente.py sia presente e che l'opzione 1 sia stata eseguita.
-Opzione 4: Accede al menu delle visualizzazioni (implementato in grafici.py). Permette di esplorare grafici sui dati o sui risultati. Richiede che il file grafici.py sia presente.
-Opzione 5: Esci dal programma.
-Descrizione Dettagliata dei File
-main.py:
-Il punto di avvio dell'applicazione.
-Definisce la funzione menu() che presenta le opzioni all'utente.
-Importa e chiama funzioni da mainTrain.py, mainTest.py, insertUtente.py, e grafici.py in base alla scelta dell'utente.
-Contiene il blocco if __name__ == "__main__": per garantire l'esecuzione del menu all'avvio dello script.
-mainTrain.py:
-Contiene la funzione train() che orchestra il processo di addestramento.
-Carica il dataset di training (Mentally/train.csv).
-Chiama preprocess_train da preprocessing.py.
-Definisce le feature X e il target y.
-Applica la selezione feature elimina_variabili_vif_pvalue da preprocessing.py sulle feature.
-Splitta il dataset in train e test set interni (X_train, X_test, y_train, y_test) usando train_test_split con stratify per mantenere la distribuzione delle classi.
-Inizializza e addestra i modelli: Logistic Regression (bilanciato), XGBoost (con scale_pos_weight), e una Pipeline SMOTE + XGBoost.
-Configura e esegue GridSearchCV sulla pipeline SMOTE + XGBoost per trovare la combinazione ottimale di n_estimators, max_depth, learning_rate, e scale_pos_weight basata sul F1-Score.
-Salva i modelli addestrati (best_xgb_clf_smote.pkl, logistic_regression_smote.pkl, xgb_clf_default_smote.pkl) usando joblib.
-Genera predizioni sui test set interni per la valutazione.
-Utilizza le funzioni plot_combined_confusion_matrices e plot_metrics_comparison (definite nello stesso file) per visualizzare i risultati della valutazione.
-Contiene le funzioni plot_combined_confusion_matrices e plot_metrics_comparison per la visualizzazione comparativa delle performance dei modelli sui dati di test interni.
-mainTest.py:
-Contiene la funzione test().
-Carica il dataset di test (Mentally/test.csv).
-Chiama preprocess_test da preprocessing.py, ottenendo il DataFrame pulito (df_clean) e gli ID originali (test_ids).
-Carica il modello addestrato ottimizzato (best_xgb_clf_smote.pkl) usando joblib.
-Effettua le predizioni (y_pred_class) sul DataFrame di test pulito.
-Crea un DataFrame submission con le colonne 'id' (dagli test_ids allineati) e 'Depression' (dalle predizioni).
-Salva il DataFrame submission nel file Mentally/submission.csv.
-preprocessing.py:
-Contiene un set completo di funzioni per la preparazione dei dati, riutilizzate sia per il training che per il testing e l'input manuale.
-map_sleep_duration(duration_str): Converte le varie rappresentazioni testuali della durata del sonno in valori numerici (gestisce intervalli, "less than", "more than", valori anomali).
-elimina_variabili_vif_pvalue(X, y, vif_threshold, pvalue_threshold): Implementa un processo iterativo per rimuovere le feature che presentano sia alta multicollinearità (VIF > threshold) che bassa significatività statistica (p-value > threshold) in un modello OLS.
-preprocess_train(df): Applica le logiche di imputazione specifiche per train/professionista, gestisce i rimanenti NaN, applica le codifiche (Gender, Working Status, Sleep Duration), pulisce e codifica Degree in Degree_Group_Encoded (ordinale), pulisce, gestisce valori non validi e codifica Dietary Habits (ordinale), codifica Suicidal Thoughts e Family History (binary), raggruppa e codifica Profession in Professional_Group_Encoded (label encoding), raggruppa e codifica City in Region_Encoded (label encoding), elimina colonne originali non più necessarie (City, Name, id, Profession, Degree, Degree_Group, Professional_Group, Region), rinomina e droppa la colonna Have you ever had suicidal thoughts ? (rinominata in SuicidalThoughts e poi rimossa), e salva il risultato in cleaned_train.csv.
-preprocess_test(df): Simile a preprocess_train ma adatta per il test set. Gestisce l'imputazione, le codifiche e i raggruppamenti esattamente come nel train set per garantire consistenza. Restituisce il DataFrame pulito e gli ID originali test_ids (fondamentali per la submission). Salva il risultato in cleaned_test.csv.
-preprocess_person_test(df): Simile alle funzioni preprocess_train e preprocess_test ma pensata per processare un singolo record (proveniente dall'input manuale). Applica le stesse trasformazioni di imputazione e codifica per rendere il formato compatibile con quello atteso dal modello addestrato. Salva il record processato in person_test.csv.
-insertUtente.py (CODICE NON FORNITO):
-Basato sull'importazione, si presume contenga la funzione insert_data().
-Questa funzione dovrebbe guidare l'utente attraverso l'inserimento dei valori per ogni feature necessaria alla predizione (probabilmente le stesse feature che rimangono dopo il preprocessing e la selezione).
-Probabilmente crea un DataFrame pandas con la singola riga di input e chiama preprocess_person_test da preprocessing.py.
-Successivamente, carica il modello addestrato e usa la riga processata per fare una predizione.
-Infine, presenta la predizione all'utente.
-grafici.py (CODICE NON FORNITO):
-Basato sull'importazione, si presume contenga la funzione menu_visualizzazioni() e altre funzioni di supporto.
-Potrebbe offrire opzioni per visualizzare distribuzioni di variabili, relazioni tra feature e target, o visualizzazioni dei risultati del modello (oltre quelle già presenti in mainTrain.py).
-Utilizzerebbe le librerie matplotlib e seaborn
+```
+
+Seleziona l'opzione desiderata digitando il numero corrispondente.
+
+* **Opzione 1 (Addestramento):** Questa è la fase iniziale. Carica `train.csv`, pulisce i dati (`preprocessing.py`), seleziona le feature, addestra e ottimizza i modelli, valuta i risultati (con output a console e grafici delle matrici/metriche) e salva i modelli addestrati (`.pkl`) e il dataset pulito in `Mentally/`. **È indispensabile eseguire questa opzione almeno una volta prima di procedere con le opzioni 2 e 3, poiché queste ultime dipendono dai modelli salvati.**
+* **Opzione 2 (Test e Submission):** Carica `test.csv`, applica le stesse trasformazioni del training, carica il miglior modello addestrato (`best_xgb_clf_smote.pkl`) ed effettua le predizioni per generare il file `Mentally/submission.csv`.
+* **Opzione 3 (Predizione Singola):** Permette di inserire manualmente i dati di un individuo per ottenere una predizione in tempo reale. Richiama le logiche di preprocessing per un singolo record (`preprocess_person_test` in `preprocessing.py`) e utilizza il modello salvato. **Nota: Richiede la presenza del file `insertUtente.py`.**
+* **Opzione 4 (Visualizzazioni):** Accede a un sottomenu o a funzionalità grafiche definite nello script `grafici.py`. **Nota: Richiede la presenza del file `grafici.py`.**
+* **Opzione 5 (Esci):** Termina l'esecuzione del programma.
+
+## Descrizione Dettagliata dei Moduli
+
+### `main.py`
+
+Agisce da orchestratore. Contiene la funzione `menu()` che gestisce il loop principale, presenta le opzioni all'utente, cattura l'input e invoca le funzioni appropriate dagli altri moduli (`mainTrain.py`, `mainTest.py`, `insertUtente.py`, `grafici.py`) basandosi sulla scelta effettuata.
+
+### `mainTrain.py`
+
+È il cuore del processo di addestramento. La funzione `train()` al suo interno si occupa di:
+1.  Caricare i dati di training.
+2.  Invocare `preprocess_train` per pulire e trasformare il DataFrame.
+3.  Separare feature (`X`) e target (`y`).
+4.  Applicare la selezione feature (`elimina_variabili_vif_pvalue`).
+5.  Suddividere il dataset (già con feature selezionate) in set di addestramento e test *interni* (`X_train`, `X_test`, `y_train`, `y_test`) in modo stratificato.
+6.  Inizializzare i vari modelli (Logistic Regression con bilanciamento, XGBoost con pesi di posizione).
+7.  Costruire una pipeline `imblearn` che combina SMOTE con XGBoost.
+8.  Definire e eseguire una ricerca a griglia (`GridSearchCV`) sulla pipeline SMOTE+XGBoost per trovare i migliori iperparametri, ottimizzando l'F1-Score.
+9.  Addestrare tutti i modelli definiti (LogReg, XGBoost base, XGBoost ottimizzato dalla Grid Search) sui dati di addestramento interni (`X_train`, `y_train`).
+10. Salvare i modelli addestrati (in formato `.pkl`) nella cartella `Mentally/`.
+11. Generare predizioni sui dati di test interni (`X_test`) per valutare i modelli.
+12. Chiamare le funzioni di visualizzazione (`plot_combined_confusion_matrices`, `plot_metrics_comparison`) per mostrare graficamente le performance dei modelli a confronto.
+
+Le funzioni `plot_combined_confusion_matrices` e `plot_metrics_comparison` sono definite in questo modulo per facilitare la visualizzazione dei risultati della valutazione.
+
+### `mainTest.py`
+
+Contiene la funzione `test()` responsabile della fase di predizione finale sul test set originale:
+1.  Carica il dataset `Mentally/test.csv`.
+2.  Applica le trasformazioni chiamando la funzione `preprocess_test` da `preprocessing.py`. Questa funzione restituisce il DataFrame pulito e gli ID originali, garantendo che le predizioni possano essere associate correttamente.
+3.  Carica il modello ottimizzato salvato durante l'addestramento (`best_xgb_clf_smote.pkl`).
+4.  Utilizza il modello caricato per generare le predizioni sullo stato depressivo (`y_pred_class`) per ogni riga del test set pulito.
+5.  Crea un DataFrame `submission` combinando gli ID originali e le predizioni.
+6.  Salva il DataFrame `submission` in formato CSV (`Mentally/submission.csv`) senza l'indice.
+
+### `preprocessing.py`
+
+Questo modulo è fondamentale e centralizza tutta la logica di pulizia e trasformazione dei dati per garantire coerenza tra training, test e input manuale. Contiene le seguenti funzioni:
+
+* `map_sleep_duration(duration_str)`: Una funzione ausiliaria che utilizza espressioni regolari per interpretare e convertire stringhe eterogenee che descrivono la durata del sonno in valori numerici (ore).
+* `elimina_variabili_vif_pvalue(X, y, vif_threshold, pvalue_threshold)`: Implementa un algoritmo di selezione delle feature backward-stepwise. Itera rimuovendo le feature che contemporaneamente superano una soglia di VIF (indicando alta multicollinearità) e una soglia di p-value (indicando bassa significatività statistica in un modello lineare semplice), finché non vengono soddisfatte le condizioni.
+* `preprocess_train(df)`: Implementa l'intera pipeline di preprocessing per il dataset di training. Include la gestione dei NaN con logiche basate sul ruolo (Student/Professional), imputazione con mediana/moda, codifica binaria (Genere, Stato Lavorativo/Studentesco, Suicidal Thoughts, Family History), applicazione di `map_sleep_duration`, pulizia e codifica ordinale del Grado di Istruzione (`Degree_Group_Encoded`), pulizia, validazione e codifica ordinale delle Abitudini Alimentari (`Dietary Habits`), raggruppamento e codifica nominale della Professione (`Professional_Group_Encoded`) e della Città/Regione (`Region_Encoded`). Infine, rimuove le colonne originali e quelle intermedie non più necessarie e salva il DataFrame pulito in `cleaned_train.csv`. **Nota:** Il codice rimuove la colonna `Have you ever had suicidal thoughts ?` (rinominata in `SuicidalThoughts`) alla fine del preprocessing.
+* `preprocess_test(df)`: Implementa una pipeline di preprocessing identica a `preprocess_train` ma specifica per il dataset di test. È cruciale che le trasformazioni (mappature, imputazioni) siano basate *solo* sui dati del training set originale per evitare data leakage. Questa funzione restituisce il DataFrame pulito e gli ID originali del test set. Salva il DataFrame pulito in `cleaned_test.csv`.
+* `preprocess_person_test(df)`: Una versione della pipeline di preprocessing ottimizzata per gestire un singolo record di input (presumibilmente da `insertUtente.py`). Applica le stesse trasformazioni di imputazione e codifica per rendere il formato del singolo record compatibile con quello dei dati su cui è stato addestrato il modello. Salva il record processato in `person_test.csv` (probabilmente temporaneo).
+
+### `insertUtente.py` (CODICE NON FORNITO)
+
+Basato sull'importazione nel `main.py`, questo script è atteso per contenere la funzione `insert_data()`. Il suo scopo è di:
+1.  Interagire con l'utente tramite input da console (o altra GUI) per raccogliere i dati di una singola persona (età, genere, professione, ecc.).
+2.  Organizzare questi dati in un formato compatibile con le funzioni di preprocessing (tipicamente un DataFrame pandas con una singola riga).
+3.  Chiamare la funzione `preprocess_person_test` da `preprocessing.py` per pulire e trasformare l'input dell'utente.
+4.  Caricare il modello addestrato (es. `best_xgb_clf_smote.pkl`).
+5.  Effettuare una predizione sullo stato depressivo per l'input pre-processato.
+6.  Comunicare la predizione risultante all'utente.
+
+### `grafici.py` (CODICE NON FORNITO)
+
+Basato sull'importazione nel `main.py`, questo script è atteso per contenere la funzione `menu_visualizzazioni()` e potenzialmente altre funzioni di supporto per la generazione di grafici. Il suo scopo è di fornire visualizzazioni aggiuntive rispetto a quelle incluse in `mainTrain.py`, che potrebbero includere:
+1.  Visualizzazioni esplorative del dataset originale (distribuzioni di feature, relazioni tra variabili).
+2.  Visualizzazioni relative ai risultati o alle performance del modello (oltre matrici di confusione e metriche riassuntive).
+Utilizzerebbe tipicamente le librerie `matplotlib` e `seaborn`.
+
+## Note e Possibili Sviluppi Futuri
+
+* Le funzionalità relative all'input manuale (`insertUtente.py`) e alle visualizzazioni aggiuntive (`grafici.py`) richiedono che i relativi file Python vengano aggiunti al progetto. Il codice per questi moduli non è stato incluso nelle forniture precedenti.
+* La colonna `Have you ever had suicidal thoughts ?` viene elaborata nel preprocessing ma successivamente rimossa in tutte e tre le funzioni di preprocessing (`_train`, `_test`, `_person_test`). Questo indica che non è stata inclusa come feature nel modello finale.
+* Le soglie VIF e p-value per la selezione delle feature (`elimina_variabili_vif_pvalue`) sono impostate a 5.0 e 0.05 rispettivamente, ma possono essere modificate per sperimentare diversi livelli di selezione.
+* Il progetto attuale si basa su un modello XGBoost ottimizzato tramite GridSearchCV. Potrebbero essere esplorati altri modelli (es. Support Vector Machines, Random Forest, Reti Neurali) o tecniche di ensemble per potenziali miglioramenti delle performance.
+* L'analisi dei risultati potrebbe beneficiare di ulteriori metriche (es. curva ROC, Area Under Curve) o di tecniche di interpretabilità del modello (es. SHAP, LIME).
+
+---
+
+Spero che questa formattazione e questo livello di dettaglio siano perfetti per il tuo profilo GitHub! Fammi sapere se ci sono altri aggiustamenti di cui hai bisogno.
