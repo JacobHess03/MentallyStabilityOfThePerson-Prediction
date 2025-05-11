@@ -1,8 +1,6 @@
-Certamente! Rendiamo il README ancora più dettagliato, espandendo le sezioni esistenti e aggiungendo maggiori spiegazioni tecniche basate sul codice che mi hai fornito.
 
-Ecco la versione più dettagliata:
 
-Analisi e Predizione dello Stato Depressivo
+MentallyStabilityOfThePerson-Predication
 Introduzione
 Questo progetto mira a esplorare i fattori che possono influenzare lo stato depressivo, analizzando un dataset specifico e sviluppando modelli di Machine Learning per predire la probabilità che un individuo possa soffrire di depressione. Data la crescente importanza della salute mentale, l'obiettivo è fornire uno strumento analitico e predittivo basato sui dati.
 
