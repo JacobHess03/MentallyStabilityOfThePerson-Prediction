@@ -181,4 +181,5 @@ Basato sull'importazione nel `main.py`, questo script è atteso per contenere la
 2.  Visualizzazioni relative ai risultati o alle performance del modello (oltre matrici di confusione e metriche riassuntive).
 Utilizzerebbe tipicamente le librerie `matplotlib` e `seaborn`.
 
+*Autore: Giacomo Visciotti-Simone Verrengia-Giuseppe Pio del Vecchio-Liliana Gilca*
 
