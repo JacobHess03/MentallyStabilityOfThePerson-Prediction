@@ -13,11 +13,11 @@ def gather_input(feature_columns):
     # Range per colonne numeriche
     numeric_ranges = {
         'Age': (18, 60),
-        'Academic Pressure': (1, 5),
+        'Academic Pressure': (0, 5),
         'Work Pressure': (0, 5),
         'Study Satisfaction': (0, 5),
         'Job Satisfaction': (0, 5),
-        'Financial Stress': (1, 5),
+        'Financial Stress': (0, 5),
         'CGPA': (0.0, 10.0),
         'Sleep Duration': (0.0, 12.0),
         'Work/Study Hours': (0.0, 12.0)
