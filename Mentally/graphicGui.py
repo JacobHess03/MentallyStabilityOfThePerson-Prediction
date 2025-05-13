@@ -267,36 +267,6 @@ def plot_pearson_correlation(df):
     return fig
 
 
-# def plot_depression_by_Degree_Group_Encoded_group(df):
-#     fig, ax = plt.subplots(figsize=(10, 6))
-#     # Verifica che la colonna esista
-#     if 'Degree_Group_Encoded' not in df.columns or 'Depression' not in df.columns:
-#         ax.text(0.5, 0.5, "Dati per 'Degree_Group_Encoded' non disponibili", 
-#                 ha='center', va='center', fontsize=12)
-#         ax.axis('off')
-#         plt.close(fig)
-#         return fig
-
-#     Degree_Group_Encoded_counts = df['Degree_Group_Encoded'].value_counts()
-#     top_Degree_Group_Encodeds = Degree_Group_Encoded_counts[Degree_Group_Encoded_counts > 10].index
-#     if top_Degree_Group_Encodeds.empty:
-#         ax.text(0.5, 0.5, "Nessun gruppo 'Degree_Group_Encoded' con più di 10 occorrenze", 
-#                 ha='center', va='center', fontsize=12)
-#         ax.axis('off')
-#         plt.close(fig)
-#         return fig
-
-#     df_filtered = df[df['Degree_Group_Encoded'].isin(top_Degree_Group_Encodeds)]
-#     sns.countplot(data=df_filtered, x='Degree_Group_Encoded', hue='Depression', ax=ax, palette='coolwarm')
-#     ax.set_title('Depressione per Gruppo Laurea (più comuni)')
-#     ax.set_xlabel('Laurea')
-#     ax.set_ylabel('Conteggio')
-#     plt.xticks(rotation=45, ha='right')
-#     plt.legend(title='Depressione', labels=['No', 'Sì'])
-#     plt.tight_layout()
-#     plt.close(fig)
-#     return fig
-
 
 def plot_depression_by_study_satisfaction(df):
     fig, ax = plt.subplots(figsize=(7, 5))
