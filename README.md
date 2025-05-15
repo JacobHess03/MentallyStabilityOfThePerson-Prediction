@@ -17,7 +17,7 @@ Il progetto offre le seguenti funzionalità:
     * Raggruppamento intelligente di categorie con alta cardinalità (es. Professioni, Città) in gruppi più gestibili (Professional Group, Region, Degree Group).
     * Selezione automatica delle feature basata su test statistici (VIF e p-value) per ridurre la multicollinearità e migliorare la stabilità del modello (applicata sul training set prima dello split).
 * **Pipeline di Addestramento Modelli:**
-    * Addestramento di modelli di classificazione robusti come Logistic Regression e XGBoost.
+    * Addestramento di modelli di classificazione robusti come Logistic Regression, XGBoost e XGBoost con SMOTE.
     * Strategie mirate per gestire il potenziale sbilanciamento delle classi nel dataset (stato depressivo presente vs assente), inclusi `class_weight`, `scale_pos_weight` e l'applicazione di SMOTE tramite `imblearn.pipeline`.
     * Ottimizzazione degli iperparametri del modello XGBoost utilizzando GridSearchCV con cross-validation (5 fold) focalizzata sull'ottimizzazione del F1-Score.
 * **Valutazione e Confronto Performance:**
@@ -37,23 +37,7 @@ Il progetto offre le seguenti funzionalità:
 La struttura delle cartelle e dei file è organizzata come segue:
 
 ```
-.
-├── Mentally/
-│   ├── train.csv                       # Dataset di training originale (input)
-│   ├── test.csv                        # Dataset di test originale (input)
-│   ├── submission.csv                  # Output: File CSV con le previsioni sul test set
-│   ├── cleaned_train.csv               # Output: Training set dopo preprocessing
-│   ├── cleaned_test.csv                # Output: Test set dopo preprocessing
-│   ├── person_test.csv                 # Output: File CSV temporaneo per input manuale singolo
-│   ├── best_xgb_clf_smote.pkl          # Output: Modello XGBoost ottimizzato addestrato
-│   ├── logistic_regression_smote.pkl   # Output: Modello Logistic Regression addestrato
-│   └── xgb_clf_default_smote.pkl       # Output: Modello XGBoost di base addestrato
-├── main.py                             # Script principale con menu
-├── mainTrain.py                        # Modulo: Addestramento, valutazione, salvataggio
-├── mainTest.py                         # Modulo: Predizione su test set e submission
-├── preprocessing.py                    # Modulo: Funzioni centralizzate di pulizia e trasformazione dati
-├── insertUtente.py                     # Modulo: Gestione input manuale utente (CODICE NON FORNITO)
-└── grafici.py                          # Modulo: Funzioni per visualizzazioni aggiuntive (CODICE NON FORNITO)
+Mentally/ ├── grafici.py ├── graphicGui.py ├── insertUtente.py ├── mentallyApp.py ├── menu.py ├── preprocessing.py ├── pycache/ │ ├── graphicGui.cpython-310.pyc │ ├── graphicGui.cpython-313.pyc │ ├── preprocessing.cpython-310.pyc │ ├── preprocessing.cpython-313.pyc ├── data/ │ ├── cleaned_data_for_graphs.csv │ ├── cleaned_train.csv │ ├── submission.csv │ ├── test.csv │ ├── train.csv ├── modelli/ │ ├── best_xgb_clf_smote.pkl │ ├── logistic_regression_balanced.pkl │ ├── xgb_clf_default_scaled.pkl
 ```
 
 ## Requisiti di Sistema e Installazione
