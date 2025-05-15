@@ -432,7 +432,7 @@ def preprocess_train(df):
     df_clean = df_clean.drop(columns=['City','Name','id','Profession', 'Degree', 'Degree_Group', 'Professional_Group', 'Region'])
 
     try:
-        file_path = r'Mentally\cleaned_train.csv'
+        file_path = r'Mentally\data\cleaned_train.csv'
         df_clean.to_csv(file_path, index=False)
         print("\nDataFrame esportato con successo in 'cleaned_train.csv'")
     except Exception as e:
@@ -837,7 +837,7 @@ def preprocess_test(df):
     df_clean = df_clean.drop(columns=['City','Name','id','Profession', 'Degree', 'Degree_Group', 'Professional_Group', 'Region'])
 
     try:
-        file_path = r'Mentally\cleaned_test.csv'
+        file_path = r'Mentally\data\cleaned_test.csv'
         df_clean.to_csv(file_path, index=False)
         print("\nDataFrame esportato con successo in 'cleaned_test.csv'")
     except Exception as e:
@@ -1241,7 +1241,7 @@ def preprocess_person_test(df):
     df_clean = df_clean.drop(columns=['City','Name','id','Profession', 'Degree', 'Degree_Group', 'Professional_Group', 'Region'])
 
     try:
-        file_path = r'Mentally\person_test.csv'
+        file_path = r'Mentally\data\person_test.csv'
         df_clean.to_csv(file_path, index=False)
         print("\nDataFrame esportato con successo in 'person_test.csv'")
     except Exception as e:
