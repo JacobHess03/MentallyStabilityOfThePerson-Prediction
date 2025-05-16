@@ -74,7 +74,7 @@ Assicurati di avere **Python 3.6+** installato. Le librerie Python necessarie so
 ### Esegui l'applicazione
 
 * Eseguire il file `mentallyApp.py`
-* Seleziona l'opzione desiderata digitando il numero corrispondente.
+* Si aprirà una finestra dove è possibile selezionare l'opzione desiderata.
 * **Opzione 1 (Addestramento):** Questa è la fase iniziale. Carica `train.csv`, pulisce i dati (`preprocessing.py`), seleziona le feature, addestra e ottimizza i modelli, valuta i risultati e salva i modelli addestrati (`.pkl`) e il dataset pulito in `Mentally/data`. **È indispensabile eseguire questa opzione almeno una volta prima di procedere con le opzioni 2 e 3, poiché queste ultime dipendono dai modelli salvati.**
 * **Opzione 2 (Visualizza grafici):** Carica `cleaned_data_for_graphs.csv` e tramite gli specifici bottoni puoi selezionare i vari grafici da visualizzare
 * **Opzione 3 (Predizione Singola):** Permette di inserire manualmente i dati di un individuo per ottenere una predizione in tempo reale. Richiama le logiche di preprocessing per un singolo record (`preprocess_person_test` in `preprocessing.py`) e utilizza il modello salvato. **Nota: Richiede la presenza del file `insertUtente.py`.**
